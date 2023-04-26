@@ -20,7 +20,7 @@ except Exception:
     TYPE_CHECKING = False
 
 if TYPE_CHECKING:
-    from main_antaresbot import AntaresBot
+    from main import AntaresBot
 # endregion
 
 # region const
