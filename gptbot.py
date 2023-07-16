@@ -123,13 +123,21 @@ class gptBot(baseBot):
             self.gpt_allow_list.add(chatid)
             self.gpt_allow_database.insertInto("GPT", {"TGID": chatid})
 
+    @staticmethod
+    def processMessage(text: str) -> str:
+        text = text.strip()
+        if text.startswith("/gpt"):
+            text = text[4:]
+        return text
+
     @commandCallbackMethod
     def gpt(self, update: Update, context: CallbackContext) -> handleStatus:
         if self.lastchat not in self.gpt_allow_list and not isfromme(update):
             return self.errorInfo("你/这个群没有权限")
         oldmsg = botmessages(
             self.lastchat, self.lastmsgid)
-        msgid = self.reply(self.call_gpt(oldmsg, update.message.text))
+        question = self.processMessage(update.message.text)
+        msgid = self.reply(self.call_gpt(oldmsg, question))
         self.gpt_session_keeper.register_session(oldmsg, botmessages(
             self.lastchat, msgid))
         return True
